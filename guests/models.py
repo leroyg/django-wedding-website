@@ -24,14 +24,18 @@ class Party(models.Model):
     name = models.TextField()
     type = models.CharField(max_length=10, choices=ALLOWED_TYPES)
     category = models.CharField(max_length=20, null=True, blank=True)
-    save_the_date_sent = models.DateTimeField(null=True, blank=True, default=None)
-    save_the_date_opened = models.DateTimeField(null=True, blank=True, default=None)
-    invitation_id = models.CharField(max_length=32, db_index=True, default=_random_uuid, unique=True)
+    save_the_date_sent = models.DateTimeField(
+        null=True, blank=True, default=None)
+    save_the_date_opened = models.DateTimeField(
+        null=True, blank=True, default=None)
+    invitation_id = models.CharField(
+        max_length=32, db_index=True, default=_random_uuid, unique=True)
     invitation_sent = models.DateTimeField(null=True, blank=True, default=None)
-    invitation_opened = models.DateTimeField(null=True, blank=True, default=None)
+    invitation_opened = models.DateTimeField(
+        null=True, blank=True, default=None)
     is_invited = models.BooleanField(default=False)
     rehearsal_dinner = models.BooleanField(default=False)
-    is_attending = models.NullBooleanField(default=None)
+    is_attending = models.BooleanField(null=True)
     comments = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
@@ -66,12 +70,14 @@ class Guest(models.Model):
     """
     A single guest
     """
-    party = models.ForeignKey(Party)
+    party = models.ForeignKey(Party, on_delete=models.CASCADE)
     first_name = models.TextField()
     last_name = models.TextField(null=True, blank=True)
     email = models.TextField(null=True, blank=True)
-    is_attending = models.NullBooleanField(default=None)
-    meal = models.CharField(max_length=20, choices=MEALS, null=True, blank=True)
+    is_attending = models.BooleanField(null=True)
+    meal = models.CharField(
+        max_length=20, choices=MEALS, null=True, blank=True)
+    # dietary_restrictions = models.TextField(null=True, blank=True)
     is_child = models.BooleanField(default=False)
 
     @property

@@ -1,5 +1,5 @@
 import csv
-import StringIO
+from io import StringIO
 import uuid
 from guests.models import Party, Guest
 
@@ -12,9 +12,10 @@ def import_guests(path):
             if first_row:
                 first_row = False
                 continue
-            party_name, first_name, last_name, party_type, is_child, category, is_invited, email = row[:8]
+            party_name, first_name, last_name, party_type, is_child, category, is_invited, email = row[
+                :8]
             if not party_name:
-                print 'skipping row {}'.format(row)
+                print('skipping row {}').format(row)
                 continue
             party = Party.objects.get_or_create(name=party_name)[0]
             party.type = party_type
@@ -24,11 +25,13 @@ def import_guests(path):
                 party.invitation_id = uuid.uuid4().hex
             party.save()
             if email:
-                guest, created = Guest.objects.get_or_create(party=party, email=email)
+                guest, created = Guest.objects.get_or_create(
+                    party=party, email=email)
                 guest.first_name = first_name
                 guest.last_name = last_name
             else:
-                guest = Guest.objects.get_or_create(party=party, first_name=first_name, last_name=last_name)[0]
+                guest = Guest.objects.get_or_create(
+                    party=party, first_name=first_name, last_name=last_name)[0]
             guest.is_child = _is_true(is_child)
             guest.save()
 

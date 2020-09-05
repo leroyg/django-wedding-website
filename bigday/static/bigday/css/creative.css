@@ -179,6 +179,10 @@ aside {
     }
 }
 
+.container-fluid {
+    background: #ffffff70;
+}
+
 header {
     position: relative;
     width: 100%;
@@ -193,7 +197,7 @@ header {
 }
 
 #main-header {
-    background-image: url('../images/wedding-selfie-better.jpg');
+    background-image: url('../images/Madison_and_James3.jpg');
 }
 
 header .header-content {

@@ -3,7 +3,7 @@ from collections import namedtuple
 import random
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Count, Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
@@ -33,8 +33,10 @@ def dashboard(request):
     parties_with_pending_invites = Party.objects.filter(
         is_invited=True, is_attending=None
     ).order_by('category', 'name')
-    parties_with_unopen_invites = parties_with_pending_invites.filter(invitation_opened=None)
-    parties_with_open_unresponded_invites = parties_with_pending_invites.exclude(invitation_opened=None)
+    parties_with_unopen_invites = parties_with_pending_invites.filter(
+        invitation_opened=None)
+    parties_with_open_unresponded_invites = parties_with_pending_invites.exclude(
+        invitation_opened=None)
     attending_guests = Guest.objects.filter(is_attending=True)
     guests_without_meals = attending_guests.filter(
         is_child=False
@@ -43,8 +45,10 @@ def dashboard(request):
     ).order_by(
         'party__category', 'first_name'
     )
-    meal_breakdown = attending_guests.exclude(meal=None).values('meal').annotate(count=Count('*'))
-    category_breakdown = attending_guests.values('party__category').annotate(count=Count('*'))
+    meal_breakdown = attending_guests.exclude(
+        meal=None).values('meal').annotate(count=Count('*'))
+    category_breakdown = attending_guests.values(
+        'party__category').annotate(count=Count('*'))
     return render(request, 'guests/dashboard.html', context={
         'guests': Guest.objects.filter(is_attending=True).count(),
         'possible_guests': Guest.objects.filter(party__is_invited=True).exclude(is_attending=False).count(),
@@ -76,7 +80,8 @@ def invitation(request, invite_id):
             guest.save()
         if request.POST.get('comments'):
             comments = request.POST.get('comments')
-            party.comments = comments if not party.comments else '{}; {}'.format(party.comments, comments)
+            party.comments = comments if not party.comments else '{}; {}'.format(
+                party.comments, comments)
         party.is_attending = party.any_guests_attending
         party.save()
         return HttpResponseRedirect(reverse('rsvp-confirm', args=[invite_id]))
@@ -86,7 +91,8 @@ def invitation(request, invite_id):
     })
 
 
-InviteResponse = namedtuple('InviteResponse', ['guest_pk', 'is_attending', 'meal'])
+InviteResponse = namedtuple(
+    'InviteResponse', ['guest_pk', 'is_attending', 'meal'])
 
 
 def _parse_invite_params(params):
